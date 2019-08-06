@@ -31,14 +31,14 @@ class BertNer(BertForTokenClassification):
 
 class Ner:
 
-    def __init__(self, model_dir: str):
+    def __init__(self, model_dir):
         self.model , self.tokenizer, self.model_config = self.load_model(model_dir)
         self.label_map = self.model_config["label_map"]
         self.max_seq_length = self.model_config["max_seq_length"]
         self.label_map = {int(k):v for k,v in self.label_map.items()}
         self.model.eval()
 
-    def load_model(self, model_dir: str, model_config: str = "model_config.json"):
+    def load_model(self, model_dir, model_config="model_config.json"):
         model_config = os.path.join(model_dir,model_config)
         model_config = json.load(open(model_config))
         output_config_file = os.path.join(model_dir, CONFIG_NAME)
@@ -52,7 +52,7 @@ class Ner:
         tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"],do_lower_case=False)
         return model, tokenizer, model_config
 
-    def tokenize(self, text: str):
+    def tokenize(self, text):
         """ tokenize input"""
         words = word_tokenize(text)
         tokens = []
@@ -67,7 +67,7 @@ class Ner:
                     valid_positions.append(0)
         return tokens, valid_positions
 
-    def preprocess(self, text: str):
+    def preprocess(self, text):
         """ preprocess """
         tokens, valid_positions = self.tokenize(text)
         ## insert "[CLS]"
@@ -88,7 +88,7 @@ class Ner:
             valid_positions.append(0)
         return input_ids,input_mask,segment_ids,valid_positions
 
-    def predict(self, text: str):
+    def predict(self, text):
         input_ids,input_mask,segment_ids,valid_ids = self.preprocess(text)
         input_ids = torch.tensor([input_ids],dtype=torch.long)
         input_mask = torch.tensor([input_mask],dtype=torch.long)

@@ -13,7 +13,7 @@ from mbot_nlu_pytorch.bert import Ner
 
 class NLUModel(object):
 
-    def __init__(self, model_dir: str):
+    def __init__(self, model_dir):
 
         self.model = Ner(model_dir)
 
