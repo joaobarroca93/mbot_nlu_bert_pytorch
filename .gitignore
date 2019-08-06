@@ -39,3 +39,7 @@ Thumbs.db
 # pyc generated files #
 ######################
 *.pyc
+
+# pytorch model files #
+######################
+*.bin
