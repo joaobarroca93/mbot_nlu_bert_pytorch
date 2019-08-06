@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import absolute_import, division, print_function
 
@@ -8,7 +8,7 @@ import json
 import nltk
 nltk.download('punkt')
 
-from mbot_nlu_pytorch.bert import Ner
+from mbot_nlu_pytorch.bert_model import Ner
 
 
 class NLUModel(object):
@@ -18,20 +18,20 @@ class NLUModel(object):
         self.model = Ner(model_dir)
 
 
-    def predict(sentences):
+    def predict(self, sentences):
 
         preds = None
 
         for sentence in sentences:
 
-            output = model.predict(sentence)
+            output = self.model.predict(sentence)
 
             objs = []
             obj_object = []
             for word_tag_pair in output:
-                word = word_tag_pair[0]
-                tag = word_tag_pair[1]["tag"]
-                prob = word_tag_pair[1]["confidence"]
+                word = word_tag_pair["word"]
+                tag = word_tag_pair["tag"].encode(encoding="utf-8")
+                prob = word_tag_pair["confidence"]
                 if tag == "Bobject":
                     obj_object.append(word)
                 elif tag == "Iobject":
@@ -46,14 +46,6 @@ class NLUModel(object):
 
             print("\n| Order: ", sentence)
             for o in objs:
-                w = compute_multiple_words_vector(o.split(), embedding_model)
-                true_obj = find_similar_word(w, word_encoder=items_encoder, threshold=threshold)
-                if true_obj:
-                    print("--> Known Item: ", true_obj)
-                else:
-                    print("--> Unknown Item: ", o)
-                    # when I dont know an item I can ask for confirmation and then add it to the know items
-                    #new_dict = {o: compute_multiple_words_vector(o.split(), embedding_model)}
-                    #items_encoder.update(new_dict)
+                print("--> Item: ", o)
 
         return preds

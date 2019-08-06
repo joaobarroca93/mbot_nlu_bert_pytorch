@@ -11,7 +11,10 @@ from nltk import word_tokenize
 from pytorch_pretrained_bert.modeling import (CONFIG_NAME, WEIGHTS_NAME,
                                               BertConfig,
                                               BertForTokenClassification)
-from pytorch_pretrained_bert.tokenization import BertTokenizer
+
+#from pytorch_pretrained_bert.tokenization import BertTokenizer
+import bert
+from bert import tokenization
 
 class BertNer(BertForTokenClassification):
    
@@ -49,7 +52,13 @@ class Ner:
           model.load_state_dict(torch.load(output_model_file))
         else:
           model.load_state_dict(torch.load(output_model_file,map_location='cpu'))
-        tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"],do_lower_case=False)
+
+        #tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"],do_lower_case=False)
+        vocab_path = os.path.join(model_dir, 'vocab.txt')
+        tokenizer = tokenization.FullTokenizer(
+            vocab_file=vocab_path, do_lower_case=False
+        )
+
         return model, tokenizer, model_config
 
     def tokenize(self, text):
