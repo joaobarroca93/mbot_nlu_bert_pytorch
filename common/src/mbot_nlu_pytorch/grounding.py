@@ -78,6 +78,6 @@ if __name__ == '__main__':
     while True:
         try:
             item = input("ITEM: ")
-            print(ground_model.predict(item=item))
+            print(ground_model.predict(item_words=item))
         except KeyboardInterrupt:
             continue
