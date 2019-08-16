@@ -3,6 +3,7 @@
 from __future__ import absolute_import, division, print_function
 
 import json
+import copy
 #import ipdb
 
 import nltk
@@ -33,19 +34,20 @@ def process_ner_pred(ner_preds):
         tag = pred[1]["tag"][0]
         key = pred[1]["tag"][1:]
         if tag == "B":
-            pred_obj = {key: [word], "confidence": None}
+            slot = copy.deepcopy(key)
+            pred_obj = {key: {"value": [word], "confidence": None}}
             confidence = conf
         elif tag == "I":
-            if pred_obj and key in pred_obj.keys():
-                pred_obj[key].append(word)
+            if pred_obj and slot in pred_obj.keys():
+                pred_obj[slot]["value"].append(word)
                 confidence *= conf
         elif tag == "O" and pred_obj:
-            pred_obj["confidence"] = confidence
+            pred_obj[slot]["confidence"] = confidence
             predicts.append(pred_obj)
             pred_obj = None
             confidence = 0.0
     if pred_obj:
-        pred_obj["confidence"] = confidence
+        pred_obj[slot]["confidence"] = confidence
         predicts.append(pred_obj)
     return predicts
 
@@ -63,7 +65,9 @@ class NLUModel(object):
         self.slot_filing_model = BertNerInference(model_dir=slot_filing_model_dir)
 
         if grounding_model_dir:
-            self.ground_model = GroundingModel(known_words=ontology["known_words"], model_dir=grounding_model_dir)
+            known_words = ontology["known_words"]
+            known_words = [word.encode('utf-8') for word in known_words]
+            self.ground_model = GroundingModel(known_words=known_words, model_dir=grounding_model_dir)
 
     def predict(self, sentences):
 
@@ -90,8 +94,8 @@ class NLUModel(object):
                 try:
                     for pred in preds:
                         slot = list(pred.keys())[0]
-                        value = list(pred.values())[0]
-                        conf = list(pred.values())[1]
+                        value = pred[slot]["value"]
+                        conf = pred[slot]["confidence"]
                         true_value = None
 
                         if self.ground_model:
@@ -137,12 +141,12 @@ if __name__ == '__main__':
             print("=" * 20)
             sentence = raw_input("SENTENCE: ")
 
+            if sentence[0] == 'Q':
+                exit()
+
             d_act = nlu_model.predict(sentence)
 
             #print(json.dumps(d_act, indent=4))
-
-            if sentence[0] == 'Q':
-                exit()
 
         except KeyboardInterrupt:
             continue

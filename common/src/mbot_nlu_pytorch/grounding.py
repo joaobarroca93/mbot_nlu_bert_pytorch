@@ -46,7 +46,6 @@ class GroundingModel(object):
         for word in self.word_encoder.keys():
             cosine_similarity = np.dot(w, self.word_encoder[word]) / (np.linalg.norm(w) * np.linalg.norm(
                 self.word_encoder[word]))
-            print(word, cosine_similarity)
             try:
                 if cosine_similarity >= self.threshold and cosine_similarity >= max_cosine_sim:
                     possible_object = word
@@ -64,7 +63,6 @@ class GroundingModel(object):
             words = [word for word in item_words if word not in self.stop_words]
         else:
             words = item_words
-        print(words)
         w = self._compute_multiple_words_vector(words)
         return self._find_similar_word(w)
 
