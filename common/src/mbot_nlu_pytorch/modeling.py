@@ -3,8 +3,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import json
 import os
 
-from nltk import word_tokenize
-
 import torch
 import torch.nn.functional as F
 from torch.nn import CrossEntropyLoss, MSELoss
@@ -13,6 +11,10 @@ from pytorch_pretrained_bert.modeling import (CONFIG_NAME, WEIGHTS_NAME,
                                               BertConfig,
                                               BertForTokenClassification,
                                               BertForSequenceClassification)
+
+import nltk
+from nltk import word_tokenize
+nltk.download('punkt')
 
 
 class BertNerModel(BertForTokenClassification):

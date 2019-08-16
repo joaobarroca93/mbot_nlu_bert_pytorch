@@ -2,11 +2,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-import numpy as np
 import json
-
-#import nltk
-#nltk.download('punkt')
 
 from mbot_nlu_pytorch.modeling import BertClassificationInference, BertNerInference
 
