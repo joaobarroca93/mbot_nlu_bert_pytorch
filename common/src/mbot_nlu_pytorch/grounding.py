@@ -5,8 +5,6 @@ import numpy as np
 
 import nltk
 from nltk.corpus import stopwords
-nltk.download('punkt')
-nltk.download('stopwords')
 
 
 class GroundingModel(object):
@@ -25,6 +23,7 @@ class GroundingModel(object):
             # Remove any known words from the stopwords
             [self.stop_words.remove(word) for word in self.known_words if word in self.stop_words]
             self.stop_words.add("please")
+            self.stop_words = [word.encode('utf-8') for word in self.stop_words]
 
         self.word_encoder = self._encode_known_words()
         self.threshold = threshold
@@ -47,6 +46,7 @@ class GroundingModel(object):
         for word in self.word_encoder.keys():
             cosine_similarity = np.dot(w, self.word_encoder[word]) / (np.linalg.norm(w) * np.linalg.norm(
                 self.word_encoder[word]))
+            print(word, cosine_similarity)
             try:
                 if cosine_similarity >= self.threshold and cosine_similarity >= max_cosine_sim:
                     possible_object = word
@@ -64,11 +64,17 @@ class GroundingModel(object):
             words = [word for word in item_words if word not in self.stop_words]
         else:
             words = item_words
+        print(words)
         w = self._compute_multiple_words_vector(words)
         return self._find_similar_word(w)
 
 
 if __name__ == '__main__':
+
+    import time
+
+    nltk.download('punkt')
+    nltk.download('stopwords')
 
     known_items = ["beer", "coke", "fridge", "laptop", "book"]
 
@@ -78,7 +84,9 @@ if __name__ == '__main__':
 
     while True:
         try:
-            item = raw_input("ITEM: %s")
-            print(ground_model.predict(item_words=item))
+            item = raw_input("ITEM: ")
+            if item[0] == 'Q':
+                exit()
+            print(ground_model.predict(item_words=item.split()))
         except KeyboardInterrupt:
             continue

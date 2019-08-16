@@ -5,6 +5,8 @@ from __future__ import absolute_import, division, print_function
 import json
 #import ipdb
 
+import nltk
+
 #from mbot_nlu_pytoch.modeling import BertClassificationInference, BertNerInference
 #from mbot_nlu_pytoch.grounding import GroundingModel
 
@@ -119,6 +121,9 @@ class NLUModel(object):
 
 if __name__ == '__main__':
 
+    nltk.download('punkt')
+    nltk.download('stopwords')
+
     nlu_model = NLUModel(
         dtype_model_dir="../model/dtype",
         intent_model_dir="../model/intent",
@@ -135,6 +140,9 @@ if __name__ == '__main__':
             d_act = nlu_model.predict(sentence)
 
             #print(json.dumps(d_act, indent=4))
+
+            if sentence[0] == 'Q':
+                exit()
 
         except KeyboardInterrupt:
             continue
