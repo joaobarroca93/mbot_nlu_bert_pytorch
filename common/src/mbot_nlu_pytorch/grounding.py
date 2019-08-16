@@ -6,6 +6,7 @@ import numpy as np
 import nltk
 from nltk.corpus import stopwords
 nltk.download('punkt')
+nltk.download('stopwords')
 
 
 class GroundingModel(object):
@@ -77,7 +78,7 @@ if __name__ == '__main__':
 
     while True:
         try:
-            item = input("ITEM: ")
+            item = raw_input("ITEM: %s")
             print(ground_model.predict(item_words=item))
         except KeyboardInterrupt:
             continue

@@ -3,7 +3,7 @@
 from __future__ import absolute_import, division, print_function
 
 import json
-import ipdb
+#import ipdb
 
 #from mbot_nlu_pytoch.modeling import BertClassificationInference, BertNerInference
 #from mbot_nlu_pytoch.grounding import GroundingModel
@@ -102,11 +102,11 @@ class NLUModel(object):
                             d_act["unknown_args"][slot].append({' '.join(value): conf})
 
                 except ValueError:
-                    ipdb.set_trace()
+                    #ipdb.set_trace()
                     raise ValueError("ERROR ON PROCESSING NER PREDICTIONS")
 
                 except IndexError:
-                    ipdb.set_trace()
+                    #ipdb.set_trace()
                     raise IndexError("ERROR ON INDEX")
 
             # change from <print> to <logging.debug>
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     while True:
         try:
             print("=" * 20)
-            sentence = input("SENTENCE: ")
+            sentence = raw_input("SENTENCE: ")
 
             d_act = nlu_model.predict(sentence)
 
