@@ -14,9 +14,15 @@ def main():
 
     rospack = rospkg.RosPack()
     pkg_dir = rospack.get_path("mbot_nlu_pytorch")
-    model_dir = os.path.join(pkg_dir, "common/src/model")
+    dtype_model_dir = os.path.join(pkg_dir, "common/src/models/dtype")
+    intent_model_dir = os.path.join(pkg_dir, "common/src/models/intent")
+    slot_filing_model_dir = os.path.join(pkg_dir, "common/src/models/slotfiling")
 
-    nlu_model = NLUModel(model_dir=model_dir)
+    nlu_model = NLUModel(
+        dtype_model_dir=dtype_model_dir,
+        intent_model_dir=intent_model_dir,
+        slot_filing_model_dir=slot_filing_model_dir
+    )
 
     sentences = [
         "I want a coffee",
