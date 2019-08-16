@@ -43,3 +43,7 @@ Thumbs.db
 # pytorch model files #
 ######################
 *.bin
+
+# pycharm files #
+######################
+.idea*
