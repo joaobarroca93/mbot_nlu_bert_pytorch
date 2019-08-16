@@ -1,0 +1,1 @@
+{"bert_model": "bert-base-uncased", "do_lower": true, "max_seq_length": 15, "num_labels": 12, "label_map": {"0": "O", "1": "Bobject", "2": "Iobject", "3": "Bsource", "4": "Isource", "5": "Bdestination", "6": "Idestination", "7": "Bperson", "8": "Bwhat_to_tell", "9": "Iwhat_to_tell", "10": "[CLS]", "11": "[SEP]"}}

@@ -1,0 +1,14 @@
+               precision    recall  f1-score   support
+
+ Idestination     0.9998    0.9983    0.9990     10419
+      Bperson     1.0000    1.0000    1.0000     52046
+      Bobject     1.0000    1.0000    1.0000     19954
+ Bdestination     1.0000    0.9997    0.9999     37956
+      Bsource     0.9998    0.9994    0.9996      4792
+Iwhat_to_tell     1.0000    1.0000    1.0000     13998
+Bwhat_to_tell     1.0000    1.0000    1.0000     13998
+      Isource     0.9963    0.9826    0.9894      1383
+      Iobject     1.0000    0.9524    0.9756      1658
+
+    micro avg     0.9996    0.9991    0.9994    156204
+    macro avg     0.9999    0.9991    0.9995    156204

@@ -1,0 +1,1 @@
+{"bert_model": "bert-base-uncased", "do_lower": true, "max_seq_length": 15, "num_labels": 10, "label_map": {"0": "answer", "1": "find", "2": "follow", "3": "go", "4": "guide", "5": "meet", "6": "none", "7": "place", "8": "take", "9": "tell"}}

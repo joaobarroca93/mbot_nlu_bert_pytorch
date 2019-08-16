@@ -1,0 +1,1 @@
+{"bert_model": "bert-base-uncased", "do_lower": true, "max_seq_length": 15, "num_labels": 10, "label_map": {"0": "ack", "1": "affirm", "2": "bye", "3": "help", "4": "inform", "5": "negate", "6": "none", "7": "repeat", "8": "restart", "9": "thankyou"}}
