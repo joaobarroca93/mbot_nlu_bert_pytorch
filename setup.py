@@ -9,4 +9,5 @@ d = generate_distutils_setup(
  package_dir={'mbot_nlu_pytorch': 'common/src/mbot_nlu_pytorch', 'mbot_nlu_pytorch_ros': 'ros/src/mbot_nlu_pytorch_ros'}
 )
 
-setup(**d, requires=['numpy', 'gensim', 'nltk', 'torch'])
+setup(**d)
+#setup(**d, requires=['numpy', 'gensim', 'nltk', 'torch'])

@@ -1,3 +1,4 @@
 string slot
 string value
-float64 probability
+float64 confidence
+bool known

@@ -4,15 +4,13 @@ from __future__ import absolute_import, division, print_function
 
 import json
 import copy
-#import ipdb
 
 import nltk
 
-#from mbot_nlu_pytoch.modeling import BertClassificationInference, BertNerInference
-#from mbot_nlu_pytoch.grounding import GroundingModel
+import rospy
 
-from modeling import BertClassificationInference, BertNerInference
-from grounding import GroundingModel
+from mbot_nlu_pytorch.modeling import BertClassificationInference, BertNerInference
+from mbot_nlu_pytorch.grounding import GroundingModel
 
 
 def reset_d_act():
@@ -57,16 +55,24 @@ class NLUModel(object):
     def __init__(self, dtype_model_dir, intent_model_dir, slot_filing_model_dir,
                  ontology_dir, grounding_model_dir=None):
 
+        rospy.loginfo("Loading domain ontology")
         with open(ontology_dir, "r") as fp:
             ontology = json.load(fp)
 
+        rospy.loginfo("Creating dtype model")
         self.dtype_model = BertClassificationInference(model_dir=dtype_model_dir)
+        
+        rospy.loginfo("Creating intent model")
         self.intent_model = BertClassificationInference(model_dir=intent_model_dir)
+        
+        rospy.loginfo("Creating slot filing model")
         self.slot_filing_model = BertNerInference(model_dir=slot_filing_model_dir)
-
+        
+        self.ground_model = None 
         if grounding_model_dir:
             known_words = ontology["known_words"]
             known_words = [word.encode('utf-8') for word in known_words]
+            rospy.loginfo("Creating grounding model")
             self.ground_model = GroundingModel(known_words=known_words, model_dir=grounding_model_dir)
 
     def predict(self, sentences):
@@ -108,15 +114,14 @@ class NLUModel(object):
                             d_act["unknown_args"][slot].append({' '.join(value): conf})
 
                 except ValueError:
-                    #ipdb.set_trace()
                     raise ValueError("ERROR ON PROCESSING NER PREDICTIONS")
 
                 except IndexError:
-                    #ipdb.set_trace()
                     raise IndexError("ERROR ON INDEX")
 
             # change from <print> to <logging.debug>
-            print(json.dumps(d_act, indent=4))
+            rospy.logdebug("SENTENCE: {}".format(sentence))
+            rospy.logdebug(d_act)
 
             d_acts.append(d_act)
 
