@@ -102,18 +102,29 @@ class NLUNode(object):
 		self.asr_n_best_list = msg
 		self.nlu_request_received = True
 
-	# do lower case
-	# remove punctuation
-	# remove strange characters
-	# remove digits
-	# remove stopwords
 	def preprocess_sentences(self, sentences):
 
-		no_punct_sent = [
-			sentence.translate(string.maketrans("",""), string.punctuation)
-		for sentence in sentences ]
+		sentences = [
+			' '.join(
+				x for x in sentence.split() if x not in string.punctuation
+			)
+		for sentence in sentences]
 
-		return no_punct_sent
+		sentences = [
+			' '.join(x.lower() for x in sentence.split())
+		for sentence in sentences]
+
+		sentences = [
+			sentence.replace('[^\w\s]','')
+		for sentence in sentences]
+
+		sentences = [
+			' '.join(
+				x for x in sentence.split() if  not x.isdigit()
+			)
+		for sentence in sentences]
+
+		return sentences
 
 	def begin(self):
 
