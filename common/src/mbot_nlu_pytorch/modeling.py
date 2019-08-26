@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import json
 import os
 
+from nltk import word_tokenize
+
 import torch
 import torch.nn.functional as F
 from torch.nn import CrossEntropyLoss, MSELoss
@@ -11,13 +13,6 @@ from pytorch_pretrained_bert.modeling import (CONFIG_NAME, WEIGHTS_NAME,
                                               BertConfig,
                                               BertForTokenClassification,
                                               BertForSequenceClassification)
-
-import bert
-from bert import tokenization
-
-import nltk
-from nltk import word_tokenize
-nltk.download('punkt')
 
 
 class BertNerModel(BertForTokenClassification):
@@ -124,11 +119,7 @@ class BertNerInference(object):
         )
         model.load_state_dict(torch.load(output_model_file, map_location=self.device))
         model.to(self.device)
-        #tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"], )
-        vocab_path = os.path.join(model_dir, 'vocab.txt')
-        tokenizer = tokenization.FullTokenizer(
-            vocab_file=vocab_path, do_lower_case=model_config["do_lower"]
-        )
+        tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"], do_lower_case=model_config["do_lower"])
         return model, tokenizer, model_config
 
     def tokenize(self, text):
@@ -321,18 +312,14 @@ class BertClassificationInference(object):
         model = BertClassificationModel(config, num_labels=model_config["num_labels"])
         model.load_state_dict(torch.load(output_model_file, map_location=self.device))
         model.to(self.device)
-        #tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"], do_lower_case=model_config["do_lower"])
-        vocab_path = os.path.join(model_dir, 'vocab.txt')
-        tokenizer = tokenization.FullTokenizer(
-            vocab_file=vocab_path, do_lower_case=model_config["do_lower"]
-        )
+        tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"], do_lower_case=model_config["do_lower"])
         return model, tokenizer, model_config
 
     def tokenize(self, text):
         """ tokenize input"""
         words = word_tokenize(text)
-        tokens = [self.tokenizer.tokenize(word) for word in words]
-        return tokens[0]
+        tokens = [self.tokenizer.tokenize(word)[0] for word in words]
+        return tokens
 
     def preprocess(self, text):
         """ preprocess """
@@ -348,6 +335,7 @@ class BertClassificationInference(object):
             input_ids.append(0)
             input_mask.append(0)
             segment_ids.append(0)
+
         return input_ids, input_mask, segment_ids
 
     def predict(self, text):
