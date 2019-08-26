@@ -3,8 +3,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import json
 import os
 
-from nltk import word_tokenize
-
 import torch
 import torch.nn.functional as F
 from torch.nn import CrossEntropyLoss, MSELoss
@@ -14,6 +12,12 @@ from pytorch_pretrained_bert.modeling import (CONFIG_NAME, WEIGHTS_NAME,
                                               BertForTokenClassification,
                                               BertForSequenceClassification)
 
+import bert
+from bert import tokenization
+
+import nltk
+from nltk import word_tokenize
+nltk.download('punkt')
 
 class BertNerModel(BertForTokenClassification):
 
@@ -119,7 +123,11 @@ class BertNerInference(object):
         )
         model.load_state_dict(torch.load(output_model_file, map_location=self.device))
         model.to(self.device)
-        tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"], do_lower_case=model_config["do_lower"])
+        #tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"], do_lower_case=model_config["do_lower"])
+        vocab_path = os.path.join(model_dir, 'vocab.txt')
+        tokenizer = tokenization.FullTokenizer(
+            vocab_file=vocab_path, do_lower_case=model_config["do_lower"]
+        )
         return model, tokenizer, model_config
 
     def tokenize(self, text):
@@ -312,7 +320,11 @@ class BertClassificationInference(object):
         model = BertClassificationModel(config, num_labels=model_config["num_labels"])
         model.load_state_dict(torch.load(output_model_file, map_location=self.device))
         model.to(self.device)
-        tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"], do_lower_case=model_config["do_lower"])
+        #tokenizer = BertTokenizer.from_pretrained(model_config["bert_model"], do_lower_case=model_config["do_lower"])
+        vocab_path = os.path.join(model_dir, 'vocab.txt')
+        tokenizer = tokenization.FullTokenizer(
+            vocab_file=vocab_path, do_lower_case=model_config["do_lower"]
+        )
         return model, tokenizer, model_config
 
     def tokenize(self, text):

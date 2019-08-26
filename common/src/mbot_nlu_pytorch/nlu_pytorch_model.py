@@ -73,7 +73,8 @@ class NLUModel(object):
             known_words = ontology["known_words"]
             known_words = [word.encode('utf-8') for word in known_words]
             rospy.loginfo("Creating grounding model")
-            self.ground_model = GroundingModel(known_words=known_words, model_dir=grounding_model_dir)
+            self.ground_model = GroundingModel(known_words=known_words, model_dir=grounding_model_dir,
+                                    threshold=0.7, remove_stop_words=True, do_lower_case=True)
 
     def predict(self, sentences):
 
