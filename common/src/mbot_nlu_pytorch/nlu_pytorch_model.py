@@ -4,10 +4,12 @@ from __future__ import absolute_import, division, print_function
 
 import json
 import copy
+import os
 
 import nltk
 
 import rospy
+import rospkg
 
 from mbot_nlu_pytorch.modeling import BertClassificationInference, BertNerInference
 from mbot_nlu_pytorch.grounding import GroundingModel
@@ -52,29 +54,49 @@ def process_ner_pred(ner_preds):
 
 class NLUModel(object):
 
-    def __init__(self, dtype_model_dir, intent_model_dir, slot_filing_model_dir,
-                 ontology_dir, grounding_model_dir=None):
+    def __init__(self, ontology_dir, config):
+
+        # need to feed a config with all the needed parameters as input !
+        dtype_config        = config["dtype_model"]
+        intent_config       = config["intent_model"]
+        slotfiling_config   = config["slotfiling_model"]
+        grounding_config    = config["grounding_model"]
+        node_params         = config["node_params"]
+        
+        rospack = rospkg.RosPack()
+        pkg_path = rospack.get_path("mbot_nlu_pytorch")
 
         rospy.loginfo("Loading domain ontology")
         with open(ontology_dir, "r") as fp:
             ontology = json.load(fp)
 
         rospy.loginfo("Creating dtype model")
-        self.dtype_model = BertClassificationInference(model_dir=dtype_model_dir)
+        self.dtype_model = BertClassificationInference(
+            model_dir=os.path.join(pkg_path, dtype_config["model_dir"])
+        )
         
         rospy.loginfo("Creating intent model")
-        self.intent_model = BertClassificationInference(model_dir=intent_model_dir)
+        self.intent_model = BertClassificationInference(
+            model_dir=os.path.join(pkg_path, intent_config["model_dir"])
+        )
         
         rospy.loginfo("Creating slot filing model")
-        self.slot_filing_model = BertNerInference(model_dir=slot_filing_model_dir)
+        self.slot_filing_model = BertNerInference(
+            model_dir=os.path.join(pkg_path, slotfiling_config["model_dir"])
+        )
         
         self.ground_model = None 
-        if grounding_model_dir:
+        if node_params["grounding"]:
             known_words = ontology["known_words"]
             known_words = [word.encode('utf-8') for word in known_words]
             rospy.loginfo("Creating grounding model")
-            self.ground_model = GroundingModel(known_words=known_words, model_dir=grounding_model_dir,
-                                    threshold=0.7, remove_stop_words=True, do_lower_case=True)
+            self.ground_model = GroundingModel(
+                known_words=known_words,
+                model_dir=grounding_config["model_dir"],
+                threshold=grounding_config["threshold"],
+                remove_stop_words=grounding_config["remove_stop_words"],
+                do_lower_case=grounding_config["do_lower_case"]
+            )
 
     def predict(self, sentences):
 

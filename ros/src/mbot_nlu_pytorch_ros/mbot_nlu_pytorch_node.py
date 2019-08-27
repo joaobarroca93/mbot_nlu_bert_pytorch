@@ -6,6 +6,7 @@ import copy
 import json
 import os
 import string
+import yaml
 
 import numpy as np
 
@@ -32,17 +33,18 @@ class NLUNode(object):
 
 	def __init__(self, debug=False):
 
-		n_best_topic = 'asr_n_best_list'
-		d_acts_topic = "/dialogue_acts"
+		# need to download a .yaml config with all the needed parameters !
+		rospy.loginfo("Loading node config")
+		config_path = rospy.myargv()[1]
+		config = yaml.load(open(config_path))
 
-		# get useful parameters, and if any of them doesn't exist, use the default value
-		rate 			        = rospy.get_param('~node_loop_rate', 10.0)
-		node_name 		        = rospy.get_param('~node_name', 'natural_language_understanding')
-		dtype_model_dir         = rospy.get_param('~dtype_model_dir', 'common/src/model/dtype')
-		intent_model_dir        = rospy.get_param('~intent_model_dir', 'common/src/model/intent')
-		slotfiling_model_dir    = rospy.get_param('~slotfiling_model_dir', 'common/src/model/slotfiling')
-		grounding_model_dir     = rospy.get_param('~grounding_model_dir', "glove-wiki-gigaword-50")
-		ontology_dir            = rospy.get_param('~ontology_dir', 'common/src/model/ontology.json')
+		# get node params from config
+		rate 			= config["node_params"]["rate"]
+		node_name 		= config["node_params"]["name"]
+		debug 			= config["node_params"]["debug"]
+		ontology_dir   	= config["node_params"]["ontology_dir"]
+		n_best_topic	= config["node_params"]["n_best_topic"]
+		d_acts_topic	= config["node_params"]["d_acts_topic"]
 
 		# initializes the node (if debug, initializes in debug mode)
 		if debug == True:
@@ -52,35 +54,17 @@ class NLUNode(object):
 			rospy.init_node(node_name, anonymous=False)
 			rospy.loginfo("%s node created" % node_name)
 
-		# set parameters to make sure all parameters are set to the parameter server
-		rospy.set_param('~node_loop_rate', rate)
-		rospy.set_param('~node_name', node_name)
-		rospy.set_param('~dtype_model_dir', dtype_model_dir)
-		rospy.set_param('~intent_model_dir', intent_model_dir)
-		rospy.set_param('~slotfiling_model_dir', slotfiling_model_dir)
-		rospy.set_param('~grounding_model_dir', grounding_model_dir)
-		rospy.set_param('~ontology_dir', ontology_dir)
-
-		rospy.logdebug('=== NODE PRIVATE PARAMETERS ============')
-		logdebug_param(rospy.get_param(node_name))
-
 		rospack = rospkg.RosPack()
-		# get useful paths
 		pkg_path = rospack.get_path("mbot_nlu_pytorch")
-		dtype_model_dir = os.path.join( pkg_path, dtype_model_dir )
-		intent_model_dir = os.path.join( pkg_path, intent_model_dir )
-		slotfiling_model_dir = os.path.join( pkg_path, slotfiling_model_dir )
-		ontology_dir = os.path.join( pkg_path, ontology_dir )
+		ontology_dir = os.path.join(pkg_path, ontology_dir)
 
 		rospy.loginfo('Creating NLU model')
 		self.nlu_object = NLUModel(
-			dtype_model_dir=dtype_model_dir,
-			intent_model_dir=intent_model_dir,
-			slot_filing_model_dir=slotfiling_model_dir,
-			grounding_model_dir=grounding_model_dir,
+			config = config,
 			ontology_dir=ontology_dir
 		)
 		rospy.loginfo('NLU model created')
+
 
 		self.nlu_request_received = False
 		self.asr_n_best_list = None
@@ -195,5 +179,5 @@ class NLUNode(object):
 
 def main():
 
-	nlu_node = NLUNode(debug=True)
+	nlu_node = NLUNode()
 	nlu_node.begin()

@@ -15,6 +15,24 @@
                 "smoothie",
                 "innocent mango",
                 "mango",
+                "water"
+        ],
+        "others": [
+                "ham cheese toast",
+                "chicken salad sandwich",
+                "breakfast wrap",
+                "veggie pot",
+                "small cup",
+                "medium cup",
+                "large cup",
+                "tyrrell crisps",
+                "crisps",
+                "italian biscotti",
+                "biscotti",
+                "innocent smoothie",
+                "smoothie",
+                "innocent mango",
+                "mango",
                 "apple",
                 "bag",
                 "banana",
@@ -64,7 +82,6 @@
                 "kitchen",
                 "kitchen cabinet",
                 "kitchen chair",
-                "kitchen shelve",
                 "kitchen table",
                 "living room",
                 "table",
@@ -79,6 +96,7 @@
                 "grace",
                 "hayden",
                 "jamie",
+                "john",
                 "jordan",
                 "michael",
                 "morgan",
@@ -88,11 +106,6 @@
                 "robin",
                 "sophia",
                 "taylor",
-                "her",
-                "him",
-                "me",
-                "weather",
-                "name",
-                "team name"
+                "me"
         ]
 }

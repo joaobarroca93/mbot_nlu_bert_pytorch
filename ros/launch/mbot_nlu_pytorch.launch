@@ -3,7 +3,8 @@
 
  <!-- small description about your node -->
  
- <node pkg="my_package_name" type="my_node_name" name="my_node_name"
- respawn="false" output="screen" args="$(find mbot_nlu_pytorch_name)/ros/config/my_arg_file.yaml"/>
+ <node pkg="mbot_nlu_pytorch" type="mbot_nlu_pytorch_node" name="nlu"
+ respawn="false" output="screen" 
+ args="$(find mbot_nlu_pytorch)/ros/config/config_mbot_nlu_pytorch.yaml"/>
 
 </launch>

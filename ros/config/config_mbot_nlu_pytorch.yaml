@@ -1,1 +1,42 @@
-# TODO!!
+#======================================================================================
+# configuration file for NLU node
+# all the directories are set from the package main path !!
+#======================================================================================
+#===================
+# DTYPE MODEL
+#===================
+dtype_model:
+  model_dir: "common/src/model/dtype"
+
+#===================
+# INTENT MODEL
+intent_model:
+  model_dir: "common/src/model/intent"
+
+#===================
+# SLOT FILING MODEL
+#===================
+slotfiling_model:
+  model_dir: "common/src/model/slotfiling"
+
+#===================
+# GROUNDING MODEL
+#===================
+grounding_model:
+  model_dir: "glove-wiki-gigaword-50"
+  known_words: []
+  threshold: 0.7
+  remove_stop_words: True
+  do_lower_case: True
+
+#===================
+# NODE PARAMETERS
+#===================
+node_params:
+  name: "natural_language_understanding"
+  rate: 10.0
+  debug: False
+  grounding: True
+  ontology_dir: "common/src/model/ontology.json"
+  n_best_topic: "asr_n_best_list"
+  d_acts_topic: "/dialogue_acts"
