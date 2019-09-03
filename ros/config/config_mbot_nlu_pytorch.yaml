@@ -7,17 +7,20 @@
 #===================
 dtype_model:
   model_dir: "common/src/model/dtype"
+  device: "cpu"
 
 #===================
 # INTENT MODEL
 intent_model:
   model_dir: "common/src/model/intent"
+  device: "cpu"
 
 #===================
 # SLOT FILING MODEL
 #===================
 slotfiling_model:
   model_dir: "common/src/model/slotfiling"
+  device: "cpu"
 
 #===================
 # GROUNDING MODEL
@@ -25,7 +28,7 @@ slotfiling_model:
 grounding_model:
   model_dir: "glove-wiki-gigaword-50"
   known_words: []
-  threshold: 0.7
+  threshold: 0.8
   remove_stop_words: True
   do_lower_case: True
 
@@ -37,6 +40,8 @@ node_params:
   rate: 10.0
   debug: False
   grounding: True
-  ontology_dir: "common/src/model/ontology.json"
+  #ontology_dir: "common/src/model/ontology.json"
+  ontology_dir: "common/src/model/scirob_ontology.json"
   n_best_topic: "asr_n_best_list"
-  d_acts_topic: "/dialogue_acts"
+  d_acts_topic: "dialogue_acts"
+  d_status_topic: "dialogue_status"

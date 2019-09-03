@@ -13,6 +13,8 @@ import numpy as np
 import rospy
 import rospkg
 
+from std_msgs.msg import String
+
 from mbot_nlu_pytorch.nlu_pytorch_model import NLUModel
 from mbot_nlu_pytorch.msg import (InformSlot, DialogAct,
 								DialogActArray, ASRHypothesis,
@@ -33,10 +35,15 @@ class NLUNode(object):
 
 	def __init__(self, debug=False):
 
-		# need to download a .yaml config with all the needed parameters !
-		rospy.loginfo("Loading node config")
-		config_path = rospy.myargv()[1]
-		config = yaml.load(open(config_path))
+		try:
+			# need to download a .yaml config with all the needed parameters !
+			rospy.loginfo("Loading node config")
+			config_path = rospy.myargv()[1]
+			config = yaml.load(open(config_path))
+		except IndexError:
+			rospy.loginfo("Loading node config")
+			config_path = "/home/barroca/catkin_ws/src/mbot_nlu_pytorch/ros/config/config_mbot_nlu_pytorch.yaml"
+			config = yaml.load(open(config_path))
 
 		# get node params from config
 		rate 			= config["node_params"]["rate"]
@@ -45,6 +52,7 @@ class NLUNode(object):
 		ontology_dir   	= config["node_params"]["ontology_dir"]
 		n_best_topic	= config["node_params"]["n_best_topic"]
 		d_acts_topic	= config["node_params"]["d_acts_topic"]
+		d_status_topic	= config["node_params"]["d_status_topic"]
 
 		# initializes the node (if debug, initializes in debug mode)
 		if debug == True:
@@ -76,7 +84,13 @@ class NLUNode(object):
 		self.pub_sentence_recog = rospy.Publisher(d_acts_topic, DialogActArray, queue_size=1)
 		rospy.loginfo("Publishing to topic <%s>", d_acts_topic)
 
+		#self.pub_dialogue_status = rospy.Publisher(d_status_topic, String, queue_size=1)
+		#rospy.loginfo("Publishing to topic <%s>", d_status_topic)
+
 		rospy.loginfo("Node <%s> initialization completed! Ready to accept requests" % node_name)
+
+		#self.pub_dialogue_status.publish(String("begin"))
+		
 		
 	def speechRecognitionCallback(self, msg):
 

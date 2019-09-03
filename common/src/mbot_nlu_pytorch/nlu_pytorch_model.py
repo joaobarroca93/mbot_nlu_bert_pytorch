@@ -72,17 +72,20 @@ class NLUModel(object):
 
         rospy.loginfo("Creating dtype model")
         self.dtype_model = BertClassificationInference(
-            model_dir=os.path.join(pkg_path, dtype_config["model_dir"])
+            model_dir=os.path.join(pkg_path, dtype_config["model_dir"]),
+            device=dtype_config["device"]
         )
         
         rospy.loginfo("Creating intent model")
         self.intent_model = BertClassificationInference(
-            model_dir=os.path.join(pkg_path, intent_config["model_dir"])
+            model_dir=os.path.join(pkg_path, intent_config["model_dir"]),
+            device=intent_config["device"]
         )
         
         rospy.loginfo("Creating slot filing model")
         self.slot_filing_model = BertNerInference(
-            model_dir=os.path.join(pkg_path, slotfiling_config["model_dir"])
+            model_dir=os.path.join(pkg_path, slotfiling_config["model_dir"]),
+            device=slotfiling_config["device"]
         )
         
         self.ground_model = None 
